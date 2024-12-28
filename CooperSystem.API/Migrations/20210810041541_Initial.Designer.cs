@@ -43,6 +43,9 @@ namespace CooperSystem.API.Migrations
 
                     b.Property<int>("MarcaId")
                         .HasColumnType("int");
+                    
+                    b.Property<int>("QtdCarros")
+                        .HasColumnType("int");
 
                     b.Property<string>("Nome")
                         .IsRequired()

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CooperSystem.API.Models
 {
@@ -15,6 +12,7 @@ namespace CooperSystem.API.Models
         public string Origem { get; set; }
         public string Potencia { get; set; }
         public int MarcaId { get; set; }
+        public int QtdCarros { get; set; }
         public virtual Marca Marca { get; set; }
         public DateTime AnoModelo { get; set; }
         public DateTime AnoFabricacao { get; set; }

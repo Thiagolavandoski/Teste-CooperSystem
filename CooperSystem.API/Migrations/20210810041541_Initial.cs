@@ -33,6 +33,7 @@ namespace CooperSystem.API.Migrations
                     Origem = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Potencia = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MarcaId = table.Column<int>(type: "int", nullable: false),
+                    QtdCarros = table.Column<int>(type: "int", nullable: false),
                     AnoModelo = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AnoFabricacao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Ativo = table.Column<bool>(type: "bit", nullable: false)

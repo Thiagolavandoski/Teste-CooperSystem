@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace CooperSystem.API.Repositories
 {
@@ -17,6 +16,51 @@ namespace CooperSystem.API.Repositories
         {
             _context = contextDB;
         }
+
+        public void Inserir(Marca marca)
+        {
+            var marcas = _context.Marcas
+            .Where(x => x.Ativo && x.Nome == marca.Nome)
+            .AsNoTracking()
+            .ToList();
+
+            if (marcas.Any())
+            {
+                throw new InvalidOperationException("Já existe uma marca com o mesmo nome.");
+            }
+
+            _context.Marcas.Add(marca);
+            _context.SaveChanges();
+        }
+       
+        public void Atualizar(Marca marca)
+        {
+            var marcas = _context.Marcas
+            .Where(x => x.Ativo && x.Nome == marca.Nome && x.Origem == marca.Origem && x.Id != marca.Id)
+            .AsNoTracking()
+            .ToList();
+
+            if (marcas.Any())
+            {
+                throw new InvalidOperationException("Já existe uma marca com o mesmo nome e origem.");
+            }
+
+            _context.Marcas.Update(marca);
+            _context.SaveChanges();
+        }
+
+        public List<Marca> listarTodasAsMarcas()
+        {
+            var result = _context.Marcas.Where(x => x.Ativo).AsNoTracking().ToList();
+            return result;
+        }
+
+        public List<Marca> ObterPorNomeEOrigem(string nome, string origem)
+        {
+            var result = _context.Marcas.Where(x => x.Nome.Contains(nome) && x.Origem == origem && x.Ativo).AsNoTracking().ToList();
+            return result;
+        }
+
         public void Delete(int id)
         {
             var result = _context.Marcas.Find(id);
@@ -27,28 +71,5 @@ namespace CooperSystem.API.Repositories
             _context.SaveChanges();
         }
 
-        public void Edit(Marca marca)
-        {
-            _context.Marcas.Update(marca);
-            _context.SaveChanges();
-        }
-
-        public List<Marca> GetAll()
-        {
-            var result = _context.Marcas.Where(x => x.Ativo).AsNoTracking().ToList();
-            return result;
-        }
-
-        public List<Marca> GetByFilter(string nome, string origem)
-        {
-            var result = _context.Marcas.Where(x => x.Nome.Contains(nome) && x.Origem == origem && x.Ativo).AsNoTracking().ToList();
-            return result;
-        }
-
-        public void Insert(Marca marca)
-        {
-            _context.Marcas.Add(marca);
-            _context.SaveChanges();
-        }
     }
 }

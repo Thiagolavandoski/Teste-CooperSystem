@@ -1,16 +1,12 @@
 ﻿using CooperSystem.API.Interfaces.Services;
 using CooperSystem.API.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CooperSystem.API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [CultureRoute("api/[controller]")]
     public class CarrosController : ControllerBase
     {
         private readonly ICarroService _carroService;
@@ -19,64 +15,93 @@ namespace CooperSystem.API.Controllers
         {
             _carroService = carroService;
         }
-
-        [Route("All")]
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            try
-            {
-                var result = _carroService.GetAll();
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [Route("Filter/{nome}/{origem}")]
-        [HttpGet]
-        public IActionResult GetByFilter(string nome, string origem)
-        {
-            try
-            {
-                var result = _carroService.GetByFilter(nome, origem);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [Route("Insert")]
+        
+        [Route("Inserir")]
         [HttpPost]
-        public IActionResult Post(Carro carro)
+        public IActionResult Inserir(Carro carro)
         {
             try
             {
-                _carroService.Insert(carro);
-                return Ok();
+                _carroService.Inserir(carro);
+                return Ok(new { Message = "Carro adicionado com sucesso!" });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Error = "Erro ao adicionar o carro.", Details = ex.Message });
             }
         }
 
-        [Route("Edit")]
+        [Route("Atualizar")]
         [HttpPut]
-        public IActionResult Edit(Carro carro)
+        public IActionResult Atualizar(Carro carro)
         {
             try
             {
-                _carroService.Edit(carro);
-                return Ok();
+                if (carro.Id == 0)
+                {
+                    return BadRequest(new { Error = "id do carro obrigatório" });
+                }
+                _carroService.Atualizar(carro);
+                return Ok(new { Message = "Carro editado com sucesso!" });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Error = "Erro ao editar o carro.", Details = ex.Message });
+            }
+        }
+
+        [Route("AlterarStatusCarro")]
+        [HttpPut]
+        public IActionResult AlterarStatusCarro(int id)
+        {
+            try
+            {
+                if (id == 0)
+                {
+                    return BadRequest(new { Error = "id do carro obrigatório" });
+                }
+                _carroService.AlterarStatusCarro(id);
+                return Ok(new { Message = "Status alterado com sucesso!" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = "Erro ao editar o carro.", Details = ex.Message });
+            }
+        }
+
+        [Route("listarTodosOsCarros")]
+        [HttpGet]
+        public IActionResult listarTodosOsCarros()
+        {
+            try
+            {
+                var result = _carroService.listarTodosOsCarros();
+                return Ok(new { Message = "Lista de carros obtida com sucesso!", Data = result });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = "Erro ao obter a lista de carros.", Details = ex.Message });
+            }
+        }
+
+        [Route("ObterPorNomeEOrigem")]
+        [HttpGet]
+        public IActionResult ObterPorNomeEOrigem(string nome, string origem)
+        {
+            try
+            {
+                if (nome == null)
+                    return BadRequest(new { Error = "Nome do carro obrigatório" });
+
+                if (origem == null)
+                    return BadRequest(new { Error = "Origem do carro obrigatório" });
+
+                var result = _carroService.ObterPorNomeEOrigem(nome, origem);
+                return Ok(new { Message = "Carros filtrados com sucesso!", Data = result });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = "Erro ao filtrar os carros.", Details = ex.Message });
             }
         }
 
@@ -87,11 +112,11 @@ namespace CooperSystem.API.Controllers
             try
             {
                 _carroService.Delete(id);
-                return Ok();
+                return Ok(new { Message = "Carro deletado com sucesso!" });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Error = "Erro ao deletar o carro.", Details = ex.Message });
             }
         }
     }

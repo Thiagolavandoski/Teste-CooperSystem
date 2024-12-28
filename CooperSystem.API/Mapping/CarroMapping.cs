@@ -31,6 +31,8 @@ namespace CooperSystem.API.Mapping
             builder.HasOne(c => c.Marca)
                .WithMany()
                .HasForeignKey(c => c.MarcaId);
+
+            builder.Property(x => x.QtdCarros);
         }
     }
 }
